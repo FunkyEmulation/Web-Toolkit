@@ -67,6 +67,7 @@ class Database extends PDO {
         return self::create_mysql_connexion(
                 empty($config['host']) ? '127.0.0.1' : $config['host'],
                 empty($config['dbname']) ? 'unknown' : $config['dbname'],
+                empty($config['username']) ? 'root' : $config['username'],
                 empty($config['pass']) ? '' : $config['pass']
         );
 
