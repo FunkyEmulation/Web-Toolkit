@@ -27,14 +27,14 @@ Le Toolkit n'imposant pas de structure stricte, il est utilisable sur un projet 
 
 ## Fonctionnalités
 
-[x] Un système de configuration (simple)
-[x] Un registre (enregistre des variables de façon à ce qu'elles soient utilisable n'importe où dans le code)
-[x] Un Loader (s'occupe de charge des classes / lib, ect...)
-[x] Un système de bdd utilisant PDO, mais simplifié, aliant facilité et sécurité
-[x] gestion des ActiveRecord (Opérations de sauvegarde ou de suppression facilités)
-[x] Gestions des entrés de façon sécurisé (sans passer directement par $_GET ou $_POST) avec nettoyage des varaibles
-[x] Système de cache performant et simple
-[x] Système de gestion des sorties (Output), avec vues et layout en natif
+- [x] Un système de configuration (simple)
+- [x] Un registre (enregistre des variables de façon à ce qu'elles soient utilisable n'importe où dans le code)
+- [x] Un Loader (s'occupe de charge des classes / lib, ect...)
+- [x] Un système de bdd utilisant PDO, mais simplifié, aliant facilité et sécurité
+- [x] gestion des ActiveRecord (Opérations de sauvegarde ou de suppression facilités)
+- [x] Gestions des entrés de façon sécurisé (sans passer directement par $_GET ou $_POST) avec nettoyage des varaibles
+- [x] Système de cache performant et simple
+- [x] Système de gestion des sorties (Output), avec vues et layout en natif
 
 ## Liens :
 
