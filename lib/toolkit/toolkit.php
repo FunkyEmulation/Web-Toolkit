@@ -363,6 +363,29 @@ class Output extends Singleton {
  */
 class Input extends Singleton{
     /**
+     * globale GET nettoyé
+     * @var SanitizedArray
+     */
+    public $get;
+    /**
+     * globale POST nettoyé
+     * @var SanitizedArray
+     */
+    public $post;
+
+    protected function __construct() {
+        $this->get = new SanitizedArray($_GET, FILTER_SANITIZE_STRING, null, TRUE);
+        $this->post = new SanitizedArray($_POST, FILTER_SANITIZE_MAGIC_QUOTES, null, true);
+
+        $config = Toolkit::instance()->config['input'];
+
+        if($config['GET_object'])
+            $_GET = $this->get;
+        if($config['POST_object'])
+            $_POST = $this->post;
+    }
+
+    /**
      * Récupère une variable GET de façon sécurisé (par défaut enlève les balises HTML)
      * @param string $name Le nom de la varaible
      * @param int $filter Le filtre, sous forme de constance FILTER_SANITIZE_*
@@ -370,10 +393,7 @@ class Input extends Singleton{
      * @return string La variable GET sécurisé
      */
     public function get($name, $filter = FILTER_SANITIZE_STRING, $options = null){
-        if(!isset($_GET[$name]))
-            return '';
-
-        return filter_var($_GET[$name], $filter, $options);
+        return $this->get->get($name, $filter, $options);
     }
 
     /**
@@ -384,10 +404,147 @@ class Input extends Singleton{
      * @return string La varaible POST nettoyé
      */
     public function post($name, $filter = FILTER_SANITIZE_MAGIC_QUOTES, $options = null){
-        if(!isset($_POST[$name]))
+        return $this->post->get($name, $filter, $options);
+    }
+}
+
+/**
+ * Object de tableau nettoyé (Utile pour les inputs)
+ * @since 1.1
+ */
+class SanitizedArray implements ArrayAccess, Iterator{
+    /**
+     * Les données du tableau
+     * @var array
+     */
+    private $data;
+    private $filter, $options, $read_only;
+
+    /**
+     *
+     * @param array $data
+     * @param int $default_filter Constante FILTER_SANITIZE_*
+     * @param mixed $options option pour le filtre
+     * @param boolean $read_only Tableau en lecture seul ou non ?
+     */
+    public function __construct(array $data, $default_filter, $options = NULL, $read_only = false) {
+        $this->data = $data;
+        $this->filter = $default_filter;
+        $this->options = $options;
+        $this->read_only = $read_only;
+    }
+
+    /**
+     * Optien la valeur $name
+     * @param string $name
+     * @param int $filter
+     * @param mixed $options
+     * @return mixed La valeur nettoyé
+     */
+    public function get($name, $filter = null, $options = null){
+        if($filter === null){
+            $filter = $this->filter;
+            $options = $this->options;
+        }
+
+        if(!isset($this->data[$name]))
             return '';
 
-        return filter_var($_POST[$name], $filter, $options);
+        return filter_var($this->data[$name], $filter, $options);
+    }
+
+    /**
+     * Enregistre une valeur dans le tableau
+     * /!\ Le tableau ne DOIT PAS être en lecture seule /!\
+     * @param string $name
+     * @param mixed $value
+     * @return boolean
+     */
+    public function set($name, $value){
+        if($this->read_only){
+            trigger_error("Impossible de modifier le tableau, car il est définie en tant que <b>lecture seule</b> !", E_USER_WARNING);
+            return false;
+        }
+
+        $this->data[$name] = $value;
+    }
+
+    /**
+     * Supprime une entrée du tableau
+     * @param string $name
+     * @return boolean
+     */
+    public function delete($name){
+        if($this->read_only){
+            trigger_error("Impossible de modifier le tableau, car il est définie en tant que <b>lecture seule</b> !", E_USER_WARNING);
+            return false;
+        }
+
+        unset($this->data[$name]);
+    }
+
+    #################
+    ### Accès OOP ###
+    #################
+
+    public function __get($name) {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value) {
+        $this->set($name, $value);
+    }
+
+    public function __isset($name) {
+        return isset($this->data[$name]);
+    }
+
+    public function __unset($name) {
+        $this->delete($name);
+    }
+
+    #####################
+    ### Accès tableau ###
+    #####################
+
+    public function offsetExists($offset) {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value) {
+        $this->set($offset, $value);
+    }
+
+    public function offsetUnset($offset) {
+        $this->delete($offset);
+    }
+
+    #################
+    ### Itérateur ###
+    #################
+
+    public function next() {
+        return next($this->data);
+    }
+
+    public function key() {
+        return key($this->data);
+    }
+
+    public function rewind() {
+        reset($this->data);
+    }
+
+    public function current() {
+        return current($this->data);
+    }
+
+    public function valid() {
+        return isset($this->data[$this->key()]);
     }
 }
 
@@ -506,7 +663,7 @@ function set_config_file($file){
  * @since 1.0
  */
 function set_default_config(){
-    Toolkit::instance()->config = set_config_file(CONFIG_FILE);
+    set_config_file(CONFIG_FILE);
 }
 
 /**

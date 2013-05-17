@@ -15,5 +15,9 @@ return array(
             'pass' => '',
             'dbname' => 'test'
         )
+    ),
+    'input' => array(
+        'GET_object' => true,
+        'POST_object' => true
     )
 );
