@@ -1,78 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>Web-toolkit by FunkyEmulation</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Web-toolkit</h1>
-        <h2></h2>
-        <a href="https://github.com/FunkyEmulation/Web-Toolkit" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/FunkyEmulation/Web-Toolkit">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/FunkyEmulation/Web-Toolkit/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/FunkyEmulation/Web-Toolkit/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>Welcome to GitHub Pages.</h3>
+    <div class="wrapper">
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+      <section>
+        <div id="title">
+          <h1>Web-toolkit</h1>
+          <p></p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/FunkyEmulation">FunkyEmulation</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+        <h1>Web Toolkit</h1>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p><em>Par v4vx</em></p>
 
-<h3>Designer Templates</h3>
+<h2>Présentation</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Web Toolkit est une bibliothèque permettant de facilité le codage en PHP des CMS.
+Il est principalement axé sécurité, le point faible de la plus part des CMS actuels. Son utilisation est des plus simples possible, aucunes normes est obligatoire, et le Toolkit s'adapte totalement au codage <strong>OOP</strong> comme <strong>procedurial</strong> !</p>
 
-<h3>Rather Drive Stick?</h3>
+<p>Web Toolkit est basé sur <em>Single Framework</em>, avec un code plus flexible et complet, tout en gardant les performances ! (moins de 1ms pour charge le Tookit).</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h2>Utilisation</h2>
 
-<h3>Authors and Contributors</h3>
+<p>Son utilisation est faite pour être <strong>simple</strong> et <strong>intuitive</strong>.
+Pour l'utiliser, il faut juste télécharger la dernière version (actuellement <strong>v1.0</strong>), mettre le dossier <em>lib</em> à la raine du site, et include le Toolkit au tout début du code !</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="c1">//Fichier index.php</span>
+<span class="k">require</span> <span class="s1">'lib/toolkit/toolkit.php'</span><span class="p">;</span>
 
-<h3>Support or Contact</h3>
+<span class="cm">/*</span>
+<span class="cm"> * Le code ici !</span>
+<span class="cm"> */</span>
+</pre></div>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
+<p>Le Toolkit n'imposant pas de structure stricte, il est utilisable sur un projet déjà avancé, et ce <strong>sans rien toucher au code actuel</strong> !</p>
 
-        <aside id="sidebar">
-          <a href="https://github.com/FunkyEmulation/Web-Toolkit/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/FunkyEmulation/Web-Toolkit/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+<h2>Fonctionnalités</h2>
 
-          <p class="repo-owner"><a href="https://github.com/FunkyEmulation/Web-Toolkit"></a> is maintained by <a href="https://github.com/FunkyEmulation">FunkyEmulation</a>.</p>
+<ul>
+<li>[x] Un système de configuration (simple)</li>
+<li>[x] Un registre (enregistre des variables de façon à ce qu'elles soient utilisable n'importe où dans le code)</li>
+<li>[x] Un Loader (s'occupe de charge des classes / lib, ect...)</li>
+<li>[x] Un système de bdd utilisant PDO, mais simplifié, aliant facilité et sécurité</li>
+<li>[x] gestion des ActiveRecord (Opérations de sauvegarde ou de suppression facilités)</li>
+<li>[x] Gestions des entrés de façon sécurisé (sans passer directement par $_GET ou $_POST) avec nettoyage des varaibles</li>
+<li>[x] Système de cache performant et simple</li>
+<li>[x] Système de gestion des sorties (Output), avec vues et layout en natif</li>
+</ul><h2>Liens :</h2>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<p>Description du projet : <a href="http://www.funky-emu.net/showthread.php?tid=41661&amp;pid=336602#pid336602">Funky-emu</a></p>
+      </section>
+
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
   </body>
 </html>
