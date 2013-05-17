@@ -18,7 +18,7 @@ if(PHP_VERSION_ID < 50300)
  * Version du toolkit
  */
 define('TOOLKIT_VERSION', '1.0');
-define('TOOLKIT_VERSION_ID', 100);
+define('TOOLKIT_VERSION_ID', 101);
 
 /**
  * Signe pour séparer les dossier
@@ -50,6 +50,14 @@ define('START_TIME', microtime(true));
  * Utilisation de mémoire avant exécution
  */
 define('START_MEMORY', memory_get_usage());
+
+/**
+ * Fichier de configuration
+ * @since 1.1
+ */
+if(!defined('CONFIG_FILE'))
+    define('CONFIG_FILE', TOOLKIT_DIR.'config/main'.EXT);
+
 
 #==================================================
 #               Classes abstraites
@@ -283,6 +291,11 @@ class Output extends Singleton {
             $this->cache['vars'][$name] = $value;
     }
 
+    /**
+     * Débute la mise en cache du buffer de sortie
+     * @param string $key
+     * @return boolean
+     */
     public function startCache($key) {
         if (($data = Loader::instance()->library('Cache')->get($key)) !== false) {
             $this->vars+=$data['vars'];
@@ -294,6 +307,10 @@ class Output extends Singleton {
         return true;
     }
 
+    /**
+     * Enregistre le buffer dans le cache
+     * @param int $time Durée de vie en secondes
+     */
     public function endCache($time = 60) {
         $this->cache['contents'] = ob_get_clean();
         $this->contents.=$this->cache['contents'];
@@ -460,9 +477,12 @@ function set_config(array $config){
 /**
  * Renseigne le fichier de configuration.
  * Le fichier de configuration doit OBLIGATOIREMENT retourner un tableau
+ * /!\ Fonction obsolète, veuillez plutôt définir le fichier de configuration via
+ * la constante CONFIG_FILE, permettant l'utilisation de la configuration à l'initialisation du Toolkit
  * @param string $file Le fichier de configuration
  * @return boolean
  * @since 1.0
+ * @deprecated since version 1.1
  */
 function set_config_file($file){
     if(!file_exists($file)){
@@ -482,20 +502,11 @@ function set_config_file($file){
 }
 
 /**
- * Remet de config par défaut
+ * Remet la config par défaut (Spécifié dans la constante CONFIG_FILE
  * @since 1.0
  */
 function set_default_config(){
-    Toolkit::instance()->config = array(
-        'output'=>array(
-            'views_path' => dirname(dirname(__DIR__)).DS.'templates'.DS,
-            'default_layout' => null,
-            'xss_clean' => true
-        ),
-        'cache'=>array(
-            'path' => TOOLKIT_DIR.'cache'.DS
-        )
-    );
+    Toolkit::instance()->config = set_config_file(CONFIG_FILE);
 }
 
 /**
