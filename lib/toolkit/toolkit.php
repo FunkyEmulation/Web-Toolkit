@@ -355,6 +355,14 @@ class Output extends Singleton {
         include Toolkit::instance()->config['output']['views_path'] . $file . EXT;
     }
 
+    /**
+     * nettoie le buffer de sortie, sans l'afficher
+     * @since 1.1
+     */
+    public function clean(){
+        $this->contents = '';
+        ob_clean();
+    }
 }
 
 /**
@@ -552,7 +560,9 @@ class SanitizedArray implements ArrayAccess, Iterator{
 #               Gestion des erreurs
 #==================================================
 
-/*set_error_handler(function($errno, $errstr, $errfile = '', $errline = 0, array $errcontext = array()){
+ini_set('display_errors', false);
+
+set_error_handler(function($errno, $errstr, $errfile = '', $errline = 0, array $errcontext = array()){
     if(!(error_reporting() & $errno))
         return;
 
@@ -579,7 +589,18 @@ class SanitizedArray implements ArrayAccess, Iterator{
     }
 
     
-});*/
+});
+
+//gestion des erreurs fatales
+register_shutdown_function(function(){
+    if(($err_array=error_get_last())){
+        if($err_array['type'] === E_ERROR || $err_array['type'] === E_USER_ERROR){
+            Output::instance()->clean();
+            extract($err_array);
+            require __DIR__.DS.'templates'.DS.'error'.DS.'fatal.php';
+        }
+    }
+});
 
 #==================================================
 #               Fonctions helpers

@@ -1,24 +1,9 @@
 <?php
+define('CONFIG_FILE', 'config.php');
 include '../../lib/toolkit/toolkit.php';
 
-set_config(array(
-    'output'=>array(
-        'views_path' => __DIR__.DS.'views'.DS,
-        'default_layout' => 'layout',
-        'xss_clean' => true
-    )
-));
+output_view('hello', array('name' => $_GET['name']));
 
-try{
-    $db = Database::create_mysql_connexion('127.0.0.1', 'test', 'Vincent');
-}catch(Exception $e){
-    exit($e);
-}
-
-$stmt = $db->query('SELECT * FROM news');
-
-echo '<pre>';
-var_dump($stmt->fetchAll());
-echo '</pre>';
+new test;
 
 echo 'temps de génération : ', number_format((microtime(true) - START_TIME) * 1000, 2), 'ms';
