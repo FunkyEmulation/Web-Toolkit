@@ -6,13 +6,10 @@
     body{
         background: #00A;
         color: #fff;
-        height: 100%;
-        width: 100%;
         font-family: "fixedsys", "terminal", monospace;
     }
     h1{
         font-size: 144px;
-        margin-top: 15px;
         margin-left: 125px;
         margin-bottom: 0;
     }
@@ -37,6 +34,15 @@
     li:before{
         content: "* ";
     }
+    .debug_file{
+        font-size: 12px;
+        width: 100%;
+        margin: 5px 0;
+    }
+    .debug_higthlight{
+        color: #00A;
+        background: #aaa;
+    }
 </style>
 <body>
     <h1>:(</h1>
@@ -50,6 +56,8 @@
         <li><b>Fichier : </b><?php echo $file?></li>
         <li><b>Ligne&nbsp;&nbsp;&nbsp;: </b><?php echo $line?></li>
     </p>
+    <h3>Fichier : </h3>
+    <?php Debug::displayFile($file, $line)?>
     <h3>Trace :</h3>
     <pre><?php debug_print_backtrace()?></pre>
 </body>
