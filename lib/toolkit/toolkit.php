@@ -588,7 +588,7 @@ set_error_handler(function($errno, $errstr, $errfile = '', $errline = 0, array $
             $errtype = 'Erreur';
     }
 
-    
+    display_error($errtype, $errstr, $errfile, $errline);
 });
 
 //gestion des erreurs fatales
@@ -798,6 +798,21 @@ if(!function_exists('POST')){
     function POST($name, $filter = FILTER_SANITIZE_MAGIC_QUOTES, $options = null){
         return Input::instance()->post($name, $filter, $options);
     }
+}
+
+/*********************
+ * Fonctions d'erreur
+ *********************/
+
+/**
+ * Affiche une erreur (utiliser trigger_error si c'est pour lancer une erreur !)
+ * @param string $type type d'erreur (cf: Note, Attention...)
+ * @param string $message
+ * @param string $file
+ * @param int $line
+ */
+function display_error($type, $message, $file = '', $line = 0){
+    require TOOLKIT_DIR.'templates'.DS.'error'.DS.'error.php';
 }
 
 /*********************

@@ -35,6 +35,9 @@ class Debug{
 
         echo '<table class="debug_file">';
         for($i = $line - 3; $i < $line + 2; $i++){
+            if(!isset($f_data[$i]))
+                break;
+            
             $class = $line - 1 === $i ? 'class="debug_higthlight"' : '';
             printf('<tr %s><td>#%d</td><td><pre>%s</pre></td></tr>', $class, $i, $f_data[$i]);
         }
