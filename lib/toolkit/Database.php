@@ -8,7 +8,7 @@
 if(!defined('TOOLKIT_VERSION'))
     exit("Veuillez charger le toolkit avant d'utiliser Database !");
 
-if(TOOLKIT_VERSION_ID < 100)
+if(TOOLKIT_VERSION_ID < 101)
     exit("La version du toolkit ne correspond pas. Veuillez mettre à jour le Toolkit, ou Database !");
 
 #==================================================
@@ -40,9 +40,30 @@ class Database extends PDO {
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_STATEMENT_CLASS => array('Statement', array($this))
         );
-        parent::__construct($dsn, $username, $pass, $opt);
+        try{
+            parent::__construct($dsn, $username, $pass, $opt);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), '');
+        }
         self::$lastConnexion = $this;
     }
+
+    /********************
+     * Fonctions helpers
+     ********************/
+
+    public function count($table, array $requirements = array()){
+        $query = 'SELECT COUNT(*) FROM '.addslashes($table);
+
+        if($requirements === array()){
+            $arr = $this->query($query)->fetch(PDO::FETCH_ASSOC);
+            return $arr['COUNT(*)'];
+        }
+    }
+
+    /**************************************
+     * Fonctions de gestion des connexions
+     **************************************/
 
     /**
      * Crée une nouvelle connexion, configuré dans la configuration
@@ -70,7 +91,6 @@ class Database extends PDO {
                 empty($config['username']) ? 'root' : $config['username'],
                 empty($config['pass']) ? '' : $config['pass']
         );
-
     }
 
     /**
@@ -94,6 +114,8 @@ class Database extends PDO {
      * @return Database
      */
     public static function getLastConnexion(){
+        if(self::$lastConnexion === null)
+            self::connect();
         return self::$lastConnexion;
     }
 
@@ -325,6 +347,35 @@ class ActiveRecord implements Iterator, ArrayAccess {
      */
     public function toArray(){
         return $this->vars;
+    }
+}
+
+
+#==================================================
+#         Création et gestion des requêtes
+#==================================================
+
+/**
+ * Classe de création de requêtes
+ * @since 1.1
+ */
+class QueryBuilder{
+    /**
+     * Requête généré
+     * @var string
+     */
+    private $query = '';
+    /**
+     * Connexion courante utilisé pour exécuter la requête
+     * @var Database
+     */
+    protected $connexion;
+
+    public function __construct(Database $conn = null){
+        if($conn === null)
+            $this->connexion = Database::getLastConnexion();
+        else
+            $this->connexion = $conn;
     }
 }
 

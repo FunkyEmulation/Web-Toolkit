@@ -612,6 +612,10 @@ register_shutdown_function(function(){
     }
 });
 
+set_exception_handler(function($e){
+    exit($e);
+});
+
 #==================================================
 #               Fonctions helpers
 #==================================================
