@@ -319,6 +319,13 @@ class ActiveRecord implements Iterator, ArrayAccess {
         return false;
     }
 
+    /**
+     * Retourne la ligne sous forme de tableau
+     * @return array
+     */
+    public function toArray(){
+        return $this->vars;
+    }
 }
 
 #==================================================
