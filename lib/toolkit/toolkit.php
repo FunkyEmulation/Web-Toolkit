@@ -601,7 +601,10 @@ set_error_handler(function($errno, $errstr, $errfile = '', $errline = 0, array $
 //gestion des erreurs fatales
 register_shutdown_function(function(){
     if(($err_array=error_get_last())){
-        if($err_array['type'] === E_ERROR || $err_array['type'] === E_USER_ERROR){
+        if($err_array['type'] === E_ERROR 
+                || $err_array['type'] === E_USER_ERROR
+                || $err_array['type'] === E_CORE_ERROR
+                || $err_array['type'] === E_PARSE){
             Output::instance()->clean();
             extract($err_array);
             require __DIR__.DS.'templates'.DS.'error'.DS.'fatal.php';
