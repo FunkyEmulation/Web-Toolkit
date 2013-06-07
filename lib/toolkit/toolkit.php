@@ -58,6 +58,13 @@ define('START_MEMORY', memory_get_usage());
 if(!defined('CONFIG_FILE'))
     define('CONFIG_FILE', TOOLKIT_DIR.'config/main'.EXT);
 
+/**
+ * active le mode débug ou non (permet d'enlever le système de cache, et d'afficher les erreurs)
+ * @since 1.1
+ */
+if(!defined('DEBUG'))
+    define('DEBUG', true);
+
 
 #==================================================
 #               Classes abstraites
@@ -296,8 +303,8 @@ class Output extends Singleton {
      * @param string $key
      * @return boolean
      */
-    public function startCache($key) {
-        if (($data = Loader::instance()->library('Cache')->get($key)) !== false) {
+    public function startCache($key){
+        if (($data = Loader::instance()->library('Cache')->get($key)) !== false && !DEBUG) {
             $this->vars+=$data['vars'];
             echo $data['contents'];
             return false;
@@ -313,7 +320,7 @@ class Output extends Singleton {
      */
     public function endCache($time = 60) {
         $this->cache['contents'] = ob_get_clean();
-        $this->contents.=$this->cache['contents'];
+        echo $this->cache['contents'];
         Loader::instance()->library('Cache')->set($this->cache['key'], $this->cache, $time);
         $this->cache = false;
     }
