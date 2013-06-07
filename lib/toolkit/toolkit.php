@@ -490,6 +490,13 @@ class SanitizedArray implements ArrayAccess, Iterator{
 
         unset($this->data[$name]);
     }
+    
+    public function __invoke($name, $value = null){
+        if($value === null)
+            return $this->get($name);
+
+        $this->set($name, $value);
+    }
 
     #################
     ### Accès OOP ###
