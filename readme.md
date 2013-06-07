@@ -143,7 +143,7 @@ if(!$_GET->page or !file_exists('./pages/'.$_GET->page.'.php'))
     include_once('./pages/'.$_GET->page.'.php');
 }?>
 </div>
-<?php if(isset(session_islog())):?>
+<?php if(session_islog()):?>
     <!-- menu membre -->
 <?php endif;
 if($session->level and $_SESSION['level'] >= $level_admin):?>
