@@ -1,0 +1,357 @@
+@font-face { font-family: PoliceDofus; src: url('polices/PoliceDofus.ttf'); } 
+@font-face { font-family: Arista; src: url('polices/Arista.ttf'); } 
+@font-face { font-family: coolvetica; src: url('polices/coolvetica.ttf'); }
+
+body{
+    width: 1378px;
+    margin: 0 auto 0 auto;
+    background: #65a6bd url('../images/kit/fond.png') center top no-repeat;
+    font-size: 12px;
+    font-family: Arial;
+}
+
+.clean, .clear{
+    clear: both;
+}
+
+.right{
+	float: right;
+}
+
+a{
+    outline: none;
+}
+
+p, ul, li{
+    margin: 0;
+    padding: 0;
+}
+
+
+
+#site{
+    width: 1017px;
+    margin: 0 auto 0 auto;
+}
+
+#site #idbarre{
+	background: url('../images/kit/top-body.png') repeat-x;
+	width: 100%;
+	height: 23px;
+	padding: 4px 0 3px 0;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+	color: white;
+	list-style: none;
+	text-decoration: none;
+	font-size: 10px;
+}
+
+#site #idbarre a{
+    text-decoration: none;
+	color: white;
+	list-style: none;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+#site #idbarre form input {
+	background: url('../images/kit/formfond.png') repeat-x;
+	height: 18px;
+	line-height: 18px;
+	margin-right: 5px;
+	padding: 0 5px;
+	width: 85px;
+	border: 1px inset #111;
+	-moz-border-radius: 3px 3px;
+	-webkit-border-radius: 3px 3px;
+	border-radius: 3px 3px;
+	color: white;
+	list-style: none;
+	text-decoration: none;
+	font-size: 10px;
+}
+
+#site #idbarre form .btn {
+height: 20px;
+text-align: center;
+text-transform: uppercase;
+width: 30px;
+}
+
+#site #header{
+    width: 1017px;
+    height: 195px;
+    background: url('../images/kit/header.png') center top;
+}
+
+#site #menu{
+    width: 1017px;
+    height: 60px;
+    background: url('../images/kit/menu.png') center top;
+	margin-bottom: -5px;
+}
+
+#site #menu ul{
+    list-style: none;
+    margin: 0 0 0 200px;
+}
+
+#site #menu li a{
+    font-weight: bold;
+	color: #fff;
+	text-decoration: none;
+}
+
+#site #menu li{
+    cursor: pointer;
+    font-size: 11px;
+    width: 84px;
+    height: 57px;
+    list-style: none;
+    text-align: center;
+    line-height: 55px;
+    color: #fff;
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#site #menu li:hover{
+    background: url('../images/kit/menu-hover.png');
+    color: #2f81d5;
+}
+
+#site #corps{
+    width: 1017px;
+    height: auto;
+    background: url('../images/kit/content.png') center;
+	padding-top: 5px;
+}
+
+#site #corps #corps-int #full{
+    margin: 3px 85px;
+    height: auto;
+}
+
+#site #corps #corps-int #full #corps-gauche{
+    width: 595px;
+    float: right;
+	padding-left: 5px;
+}
+
+#site #corps #corps-int #full #corps-gauche .titrePage{
+	background-image: url('../images/kit/titrepage.png');
+	background-repeat: no-repeat;
+	height: 50px;
+	padding: 23px 0 0 83px;
+	text-shadow: 1px 1px 4px#000;
+	font-size: 2em;
+	color: #fff;
+}
+
+#site #corps #corps-int #full #corps-gauche .news-titre{
+    background: url('../images/kit/news-titre.png');
+    width: 552px;
+    height: 100px;
+    color: #fff;
+}
+
+#site #corps #corps-int #full #corps-gauche .news-titre p.titre{
+    float: left;
+    width: 500px;
+	font-size: 15px;
+	font-weight: bold;
+    margin-left: 20px;
+    line-height: 55px;
+	text-shadow: 1px 1px 4px#000;
+}
+
+#site #corps #corps-int #full #corps-gauche .news-titre p.auteur{
+
+    width: 172px;
+	margin-left: 275px;
+    font-size: 11px;
+    color: #fff;
+	font-family: Arista, sans-serif;
+    line-height: 5px;
+}
+
+
+#site #corps #corps-int #full #corps-gauche .news-titre p.auteur span{
+    text-shadow: 1px 1px 4px#000;
+}
+
+#site #corps #corps-int #full #corps-gauche .news-content{
+    padding: 7px 10px;
+	border-bottom: 1px solid black;
+	margin-bottom: 15px;
+}
+
+#site #corps #corps-int #full #corps-droite{
+    width: 230px;
+    float: right;
+	margin-right: 10px;
+}
+
+#site #corps #corps-int #full #corps-droite #bu{
+	background: #19130e;
+    width: 226px;
+    color: #fff;
+	border-left: 2px solid #f4ac69;
+    border-right: 2px solid #f4ac69;
+	border-bottom: 2px solid #f4ac69;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite{
+    width: 230px;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite .titre{
+    background: url('../images/kit/menudroite.png');
+    height: 42px;
+	line-height: 37px;
+	padding-left: 45px;
+	font-weight: bold;
+	color: #ffe7ad;
+    text-shadow: 1px 1px 4px#f2ba34;
+	text-decoration: none;
+	font-size: 35px;
+	font-family: PoliceDofus, sans-serif;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite .FondMenu{
+	width: 226px;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite ul{
+	list-style: none;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite a.menuG{
+	font-weight: bold;
+	color: #fff;
+    text-shadow: 1px 1px 4px#000;
+	background-color: #19130e;
+	text-decoration: none;
+	display: block;
+	padding: 5px 0 2px 10px;
+	-webkit-transition-property: background-color, padding-left;
+	-webkit-transition-duration: .8s, .3s;
+	-webkit-transition-timing-function: linear, ease-out;
+    -moz-transition-property: background-color, padding-left;
+	-moz-transition-duration: .8s, .3s;
+	-moz-transition-timing-function: linear, ease-out;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite a.menuM{
+	font-weight: bold;
+	color: #fff;
+    text-shadow: 1px 1px 4px#000;
+	background-color: #3c352d;
+	text-decoration: none;
+	display: block;
+	padding: 5px 0 2px 10px;
+	-webkit-transition-property: background-color, padding-left;
+	-webkit-transition-duration: .8s, .3s;
+	-webkit-transition-timing-function: linear, ease-out;
+    -moz-transition-property: background-color, padding-left;
+	-moz-transition-duration: .8s, .3s;
+	-moz-transition-timing-function: linear, ease-out;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite a.menuG:hover{
+	font-weight: bold;
+	color: black;
+	padding-left: 10px;
+	background: white;
+}
+
+#site #corps #corps-int #full #corps-droite #menudroite a.menuM:hover{
+	font-weight: bold;
+	color: black;
+	padding-left: 10px;
+	background: white;
+}
+
+#footer{
+    margin-top: -3px;
+	margin-left: -180px;
+    width: 1401px;
+    height: 119px;
+    background: url('../images/kit/footer.png') no-repeat center top;
+}
+
+.footer1 {
+    display: block;
+	width: 120px;
+	height: 30px;
+	float: right;
+	margin-right: 313px;
+	margin-top: 27px;
+}
+
+.footer2 {
+    display: block;
+	width: 130px;
+	height: 30px;
+	float: right;
+	margin-right: 37px;
+	margin-top: 27px;
+}
+.admin{
+		display: inline;
+		color: black;
+		font-weight: bold;
+	}
+.admin a{
+		font-size: 13px;
+		text-decoration: none;
+		color: black;
+	}
+
+.admin a:hover{
+		background-color: #1177dd;
+		border-style: solid;
+		border-color: #3399ff;
+		border-width: 1px;
+		opacity: 0.5;
+	}
+td{
+	padding: 4px;
+	background-color: #6a6a6a;
+	border: 1px solid #9a9a9a;
+}
+tr:hover td{
+		opacity: 0.85;
+}
+a{
+	color: black;
+	}
+.neutre{
+		background-image: url(../images/classe/infos/neutre.png);
+		width: 250px;
+		height: 250px;
+	}
+.bonta{
+		background-image: url(../images/classe/infos/bonta.png);
+		width: 250px;
+		height: 250px;
+	}
+.brack{
+		background: url(../images/classe/infos/brack.png);
+		width: 250px;
+		height: 250px;
+	}
+.stats{
+		background: url(../images/classe/infos/carac.png);
+		font-size: 16px;
+		height: 172px;
+		width: 279px;
+	}
+
+

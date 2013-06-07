@@ -1,0 +1,83 @@
+v3 :
+
+- Amélioration du système de cache de le boutique
+	-> plus besoin de le config
+- Ajout de commentaires
+	-> affiche date, pseudo, texte
+	-> peu être supprimé par un admin
+- Amélioration de la fonction vider le cache
+- réorganisation du code de certaines pages pour plus de lisibilité
+- affichage de la date sur les news et le livre d'or
+- Optimisation de certaines pages (change des <meta http-equiv [...] > en header('location: ...') )
+- Correction d'affichage page d'inscription
+- ajout d'un système n'acceptant que certains caractères pour le pseudo, le nom de compte et le mot de passe
+- ajout d'un système reconnaissant si une email peu être valide ou pas
+
+Le patch V2ToV3.sql doit être éxécuté.
+
+----------------------------------------------------------
+
+v2 :
+
+- Ajouts d'un sytème de cache pour les pages suivantes:
+	-> Livre d'or
+	-> Ladder
+	-> ladder_vote
+	-> Boutique
+	-> Perso
+- Ajout de la fonction vider le cache
+- Correction d'affichage le la page ladder_vote
+
+PS: le système de cache ne marche que avec les version php5 ou superieur, si mon cms ne marche pas, veuillez prendre 
+l'ancienne version.
+Une partie du cache peu être configuré par le config (perso, boutique, ladders), pour le livre d'or et les news, c'est
+100% automatique
+
+Ce système permet un gain de rapidité d'affichage des page (~60% + rapide pour un site avec peu de trafique),
+et une réduction siginificative du nombre de requêtes..
+
+-------------------------------------------------------------
+
+v1 :
+
+Fonctions : 
+
+- Inscription : 100%
+- Nous rejoindre
+- News :
+	-> ajouter
+	-> modifier
+	-> supprimer
+- Livre d'or :
+	(uniquement admin)
+	-> supprimer
+	-> modérer
+- Ladder :
+	-> pas les MJ
+	-> affiche classe et sexe sur une images
+- Ladder vote
+- Page de vote :
+	-> temps d'attente à config
+	-> décompte (je n'ai jamais fait de javascript, se qui veut dire que mon décompte est static. Si quelqu'un peu 
+		me le coder et me le passer se serai simpa :) )
+- Boutique :
+	-> prend directement l'item dans la bdd
+	-> peu être désactivé
+	-> affiche les stats automatiquement, sans intervension d'un admin
+	-> surtaxe en cas de jet max (config)
+- gestion du compte :
+	-> possibilité de changer le mdp / email
+	-> affiche une liste des perso
+	-> supprimer ses perso
+- affichage des perso :
+	-> affichage des stats de bases
+	-> + des stats items et bonus pano
+	-> level / classe / nom...
+- gestion des comptes admin :
+	-> ban / banip / suppr compte ou perso / unban...
+	-> affichage des toutes les infos
+	-> possibiliter de voir les perso
+	-> système de purge, qui vide tout les comptes sans personnages
+- page d'info config
+- états du serveur...
+- Et je crois que c'est tout :)

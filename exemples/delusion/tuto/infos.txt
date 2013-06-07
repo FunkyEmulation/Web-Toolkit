@@ -1,0 +1,75 @@
+   ******  ****     ****  ********       **                                 **                  
+  **////**/**/**   **/** **//////       /**       **   **                  */*                  
+ **    // /**//** ** /**/**             /**      //** **        **    **  * /*  **    ** **   **
+/**       /** //***  /**/*********      /******   //***        /**   /** ******/**   /**//** ** 
+/**       /**  //*   /**////////**      /**///**   /**         //** /** /////* //** /**  //***  
+//**    **/**   /    /**       /**      /**  /**   **           //****      /*  //****    **/** 
+ //****** /**        /** ********       /******   **             //**       /*   //**    ** //**
+  //////  //         // ////////        /////    //               //        /     //    //   // 
+
+  
+Se cms à entièremet été par codé par moi, et moi seul, je n'est repris aucun codes sources ni rien.
+Au tout début, c'était pour m'entrainer, puis après je me suis dit qu'il serais bien de le partager, vu le peu d'obtions
+qu'ont le plupart des CMS. Je ne dit pas que c'est le CMS le plus complet, loin de là, mais à mon gout, il est suffisant.
+
+J'ai codé se CMS sur plusieurs semaines, en raison de maxi 30min / jours, enfaite quand j'en ai envie, ou le temps.
+Le code n'est pas forcément optimisé, je n'ai jamais dit que j'était un bon codeur, certain diront que je code comme un
+porc, après d'un côté ils ont raison, je suis tout simplement pas un pro ayant suivi des cours, ect.
+J'ai un peu apris les base sur le SDZ (que je trouve très bien pour ça ;) ), puis après j'ai apris sur le tas et en
+essayant.
+
+Aussi : N'étant pas bon disigner, je n'ai fait que prend un kitgraphique d'ici => http://www.kitgraphiquegratuit.org/apercu/design54/
+
+PS: merci de respecter mon travaille, comme tout les codeurs le souhaite, et de laisser le copyright, sans faire le
+kikoo en le changeant et disant "c moi ki lé fé lol". C'est toutes ces personnes qui tuent l'émulations. Et laisser aussi
+le lien vers kitgraphiquegratuit, à moin que vous changez complètement le disign x)
+
+Fonctions : 
+
+- Inscription : 100%
+- Nous rejoindre
+- News :
+	-> ajouter
+	-> modifier
+	-> supprimer
+- Livre d'or :
+	(uniquement admin)
+	-> supprimer
+	-> modérer
+- Ladder :
+	-> pas les MJ
+	-> affiche classe et sexe sur une images
+- Ladder vote
+- Page de vote :
+	-> temps d'attente à config
+	-> décompte (je n'ai jamais fait de javascript, se qui veut dire que mon décompte est static. Si quelqu'un peu 
+		me le coder et me le passer se serai simpa :) )
+- Boutique :
+	-> prend directement l'item dans la bdd
+	-> peu être désactivé
+	-> affiche les stats automatiquement, sans intervension d'un admin
+	-> surtaxe en cas de jet max (config)
+- gestion du compte :
+	-> possibilité de changer le mdp / email
+	-> affiche une liste des perso
+	-> supprimer ses perso
+- affichage des perso :
+	-> affichage des stats de bases
+	-> + des stats items et bonus pano
+	-> level / classe / nom...
+- gestion des comptes admin :
+	-> ban / banip / suppr compte ou perso / unban...
+	-> affichage des toutes les infos
+	-> possibiliter de voir les perso
+	-> système de purge, qui vide tout les comptes sans personnages
+- page d'info config
+- états du serveur...
+- Et je crois que c'est tout :)
+
+Les autres fonctionnalitées sont dans le changelog.
+
+Pour se qui est des codes allopass, n'aiyant jamais eu de compte, je ne sais aucunement le fonctionnement, je laisse
+donc un pro le faire à ma place =)
+
+Si vous voulez autre chose, dites le moi, je ne serais que ravie de vous aider.
+	

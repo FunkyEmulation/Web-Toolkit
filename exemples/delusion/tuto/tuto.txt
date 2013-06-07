@@ -1,0 +1,7 @@
+Tuto 
+
+1 - Veuillez lire le fichier infos.txt x)
+2 - exécutez le patch colones.sql, si il y a erreur, c'est normal
+3 - exécutez les autres patch.
+4 - allez dans inc/ et configurez le fichier config.php
+5 - amusez-vous :p
