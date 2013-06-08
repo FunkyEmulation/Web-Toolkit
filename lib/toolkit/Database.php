@@ -88,6 +88,14 @@ class Database extends PDO {
      ********************/
 
     /**
+     * Initialise le générateur de requêtes
+     * @return \QueryBuilder
+     */
+    public function builder(){
+        return new QueryBuilder($this);
+    }
+
+    /**
      * Compte le nombre d'éléments dans une table
      * @param string $table Nom de la table
      * @param array $requirements condition WHERE
@@ -223,6 +231,16 @@ class Statement extends PDOStatement {
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function execute($input_parameters = null) {
+        try{
+            return parent::execute($input_parameters);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $this->_connexion->getLastQuery());
+        }
+    }
 }
 
 /**
@@ -435,9 +453,24 @@ class QueryBuilder{
      */
     private $connexion;
     private $q_sel = array(), $q_from = array(), $q_where = array(),
-            $q_params = array();
+            $q_params = array(), $q_set = array(), $q_values = array();
 
+    /**
+     * Table à utiliser pour l'insersion
+     * @var string
+     */
+    private $q_insert_table = '';
+    /**
+     * Nom de la table pour le update
+     * @var string
+     */
+    private $q_update_table = '';
+    /**
+     * Type de requête
+     * @var int
+     */
     private $type;
+    
     const SELECT = 1;
     const INSERT = 2;
     const DELETE = 3;
@@ -550,7 +583,69 @@ class QueryBuilder{
         }
 
         $this->q_where[] = array($type, $col, $sign);
-        $this->q_params['w_'.base64_encode($col)] = $value;
+        $this->q_params['w_'.md5($col)] = $value;
+    }
+
+    /**
+     * Initialise une requête d'update
+     * @param string $table Nom de la table
+     * @return \QueryBuilder
+     */
+    public function update($table){
+        if($this->type !== null)
+            trigger_error('Le type de la requête a déjà été définie. Il sera donc redéfinie en temps que UPDATE.', E_USER_WARNING);
+
+        $this->type = self::UPDATE;
+        $this->q_update_table = trim(addslashes($table));
+        return $this;
+    }
+
+    /**
+     * Ajout de la clause SET
+     * @param mixed $column nom de la colonne ou tableau colonne => valeur
+     * @param mixed $value valeur (si le un string est passé pour $colunm)
+     * @return \QueryBuilder
+     */
+    public function set($column, $value = null){
+        if($this->type !== self::UPDATE)
+            trigger_error('La clause SET n\'est supporté uniquement que par une requête de type update !', E_USER_WARNING);
+
+        if(is_array($column))
+            $this->q_set += $column;
+        else
+            $this->q_set[$column] = $value;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param type $table
+     * @param array $values les valeurs à insérer (non obligatoire)
+     * @return \QueryBuilder
+     */
+    public function insert($table, array $values = null){
+        $this->type = self::INSERT;
+        $this->q_insert_table = trim(addslashes($table));
+        return $this->values($values);
+    }
+
+    /**
+     * Clause VALUES pour une requête INSERT
+     * @param mixed $column nom de la colonne ou tableau colonne => valeur
+     * @param mixed $value
+     * @return \QueryBuilder
+     */
+    public function values($column, $value = null){
+        if($this->type !== self::INSERT)
+            trigger_error('La clause VALUES n\'est pas utilisable en dehors d\'une requête INSERT !', E_USER_WARNING);
+        
+        if(is_array($column))
+            $this->q_values += $column;
+        else
+            $this->q_values[$column] = $value;
+
+        return $this;
     }
 
     /**
@@ -563,6 +658,12 @@ class QueryBuilder{
             switch($this->type){
                 case self::SELECT:
                     $this->_compile_select_query();
+                    break;
+                case self::UPDATE:
+                    $this->_compile_update_query();
+                    break;
+                case self::INSERT:
+                    $this->_compile_insert_query();
                     break;
                 default:
                     throw new SQLException('Impossible de compiler la requête, car son type n\'a pas été encore définie !', '');
@@ -578,17 +679,56 @@ class QueryBuilder{
         if($this->q_from !== array())
             $this->query .= ' FROM '.implode(', ', $this->q_from);
 
+        $this->query .= $this->_compile_where_clause();
+    }
+
+    private function _compile_update_query(){
+        $this->query =  'UPDATE '.$this->q_update_table;
+
+        if($this->q_set !== array()){
+            $this->query .= ' SET ';
+            $tmp = array();
+            foreach($this->q_set as $c=>$v){
+                $tmp[] = $c.'=:u_'.md5($c);
+                $this->q_params['u_'.md5($c)] = $v;
+            }
+
+            $this->query .= implode(', ', $tmp);
+        }
+
+        $this->query .= $this->_compile_where_clause();
+    }
+
+    private function _compile_insert_query(){
+        if($this->q_values === array())
+            trigger_error('Aucunes valeurs ajoutés à l\'insertion !', E_USER_WARNING);
+
+        $cols = array();
+        $vals = array();
+        foreach($this->q_values as $c=>$v){
+            $cols[] = $c;
+            $vals[] = ':i_'.md5($c);
+            $this->q_params['i_'.md5($c)] = $v;
+        }
+
+        $this->query = sprintf('INSERT INTO %s(%s) VALUES(%s)', $this->q_insert_table, implode(', ', $cols), implode(', ', $vals));
+    }
+
+    private function _compile_where_clause(){
+        $return = '';
         if($this->q_where !== array()){
-            $this->query .= ' WHERE ';
+            $return .= ' WHERE ';
             $first = true;
             foreach($this->q_where as $c){
-                if(!$first){
-                    $this->query .= ' '.$c[0];
-                    $first = false;
-                }
-                $this->query .= ' '.$c[1].$c[2].':w_'.base64_encode($c[1]);
+                if(!$first)
+                    $return .= ' '.$c[0];
+
+                $return .= ' '.$c[1].$c[2].':w_'.md5($c[1]);
+                $first = false;
             }
         }
+
+        return $return;
     }
 
     /**
