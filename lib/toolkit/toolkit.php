@@ -202,7 +202,8 @@ class Loader extends Singleton {
                 TOOLKIT_DIR,
                 TOOLKIT_DIR.$name.DS,
                 LIB_DIR,
-                LIB_DIR.strtolower($name).DS
+                LIB_DIR.strtolower($name).DS,
+                TOOLKIT_DIR.'helpers'.DS
             );
 
             foreach($path as $dir){
