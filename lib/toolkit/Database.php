@@ -48,17 +48,63 @@ class Database extends PDO {
         self::$lastConnexion = $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare($statement, $driver_options = array()) {
+        $this->lastQuery = $statement;
+        try{
+            return parent::prepare($statement, $driver_options);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $statement);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query($statement) {
+        $this->lastQuery = $statement;
+        try{
+            return parent::query($statement);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $statement);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exec($statement) {
+        try{
+            return parent::exec($statement);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $statement);
+        }
+    }
+
     /********************
      * Fonctions helpers
      ********************/
 
+    /**
+     * Compte le nombre d'éléments dans une table
+     * @param string $table Nom de la table
+     * @param array $requirements condition WHERE
+     * @return int Nombre de lignes
+     */
     public function count($table, array $requirements = array()){
-        $query = 'SELECT COUNT(*) FROM '.addslashes($table);
-
         if($requirements === array()){
-            $arr = $this->query($query)->fetch(PDO::FETCH_ASSOC);
+            $arr = $this->query('SELECT COUNT(*) FROM '.addslashes($table))->fetch(PDO::FETCH_ASSOC);
             return $arr['COUNT(*)'];
         }
+
+        $query = new QueryBuilder($this);
+        $data = $query->select('COUNT(*)')
+                ->from($table, true)
+                ->where($requirements)
+                ->execute()->fetch(PDO::FETCH_ASSOC);
+        return $data['COUNT(*)'];
     }
 
     /**************************************
@@ -119,6 +165,13 @@ class Database extends PDO {
         return self::$lastConnexion;
     }
 
+    /**
+     * Retourne la dernière requête exécuté
+     * @return string
+     */
+    public function getLastQuery(){
+        return $this->lastQuery;
+    }
 }
 
 /**
@@ -144,7 +197,12 @@ class Statement extends PDOStatement {
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0) {
         if ($fetch_style === null)
             $this->setFetchMode(PDO::FETCH_CLASS, 'ActiveRecord', array(false, $this->_connexion));
-        return parent::fetch($fetch_style, $cursor_orientation, $cursor_offset);
+
+        try{
+            return parent::fetch($fetch_style, $cursor_orientation, $cursor_offset);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $this->_connexion->getLastQuery());
+        }
     }
 
     /**
@@ -158,7 +216,11 @@ class Statement extends PDOStatement {
             $ctor_args = array(false, $this->_connexion);
         }
 
-        return parent::fetchAll($fetch_style, $fetch_argument, $ctor_args);
+        try{
+            return parent::fetchAll($fetch_style, $fetch_argument, $ctor_args);
+        }catch(Exception $e){
+            throw new SQLException($e->getMessage(), $this->_connexion->getLastQuery());
+        }
     }
 
 }
@@ -360,6 +422,8 @@ class ActiveRecord implements Iterator, ArrayAccess {
  * @since 1.1
  */
 class QueryBuilder{
+    private static $CONDITION_TYPES = array('OR', 'AND', 'XOR');
+    private static $CONDITION_SIGNS = array('<', '>', '<=', '>=', '<>', 'LIKE', '=');
     /**
      * Requête généré
      * @var string
@@ -369,13 +433,187 @@ class QueryBuilder{
      * Connexion courante utilisé pour exécuter la requête
      * @var Database
      */
-    protected $connexion;
+    private $connexion;
+    private $q_sel = array(), $q_from = array(), $q_where = array(),
+            $q_params = array();
+
+    private $type;
+    const SELECT = 1;
+    const INSERT = 2;
+    const DELETE = 3;
+    const UPDATE = 4;
+
 
     public function __construct(Database $conn = null){
         if($conn === null)
             $this->connexion = Database::getLastConnexion();
         else
             $this->connexion = $conn;
+    }
+    /**
+     * Initialise une requête de sélection
+     * @param mixed $selected colonnes à sélectionner, sous forme de tableau, ou de chaine SQL
+     * @param boolean $escape échaper les sélecteur ou non ? ne mettez true que si il y a un risque de faille.
+     * @return \QueryBuilder
+     */
+    public function select($selected = '*', $escape = false){
+        if($this->type !== null && $this->type !== self::SELECT)
+            trigger_error('Sélection dans une requête autre que select !', E_USER_WARNING);
+        
+        if(!is_array($selected))
+            $selected = explode(',', $selected);
+
+        if($escape){
+            $selected = array_map(function($value){
+                return trim(addslashes($value));
+            }, $selected);
+        }
+
+        $this->type = self::SELECT;
+
+        $this->q_sel += $selected;
+        return $this;
+    }
+
+    /**
+     * Ajout de la clause FROM
+     * @param string $table nom de la ou les tables à sélectionner
+     * @param boolean $escape échaper le nom de la table ?
+     * @return \QueryBuilder
+     */
+    public function from($table, $escape = false){
+        if($this->type === self::UPDATE)
+            trigger_error('La clause FROM n\'est pas géré dans une requête de type update !', E_USER_WARNING);
+
+        $this->q_from[] = $escape ? addslashes($table) : $table;
+        return $this;
+    }
+
+    /**
+     * Ajoute une condition WHERE
+     * @param string $column nom de la colonne
+     * @param mixed $value valeur a chercher
+     * @param string $type AND OR XOR
+     * @param string $sign operateur de comparaison ( = < > <= >= <> LIKE)
+     * @return \QueryBuilder
+     */
+    public function where($column, $value = null, $type = 'AND', $sign = '='){
+        if(!is_array($column)){
+            $this->_where($column, $value, $type, $sign);
+            return $this;
+        }
+
+        foreach($column as $c => $v)
+            $this->_where($c, $v, $type, $sign);
+
+        return $this;
+    }
+
+    /**
+     * Ajoute une condition AND
+     * @param string $col colonne à tester
+     * @param mixed $value valeur à trouver
+     * @param string $sign signe de comparaison
+     * @return \QueryBuilder
+     */
+    public function and_where($col, $value, $sign = '='){
+        $this->_where($col, $value, 'AND', $sign);
+        return $this;
+    }
+
+    /**
+     * Ajoute une condition OR
+     * @param string $col colonne à tester
+     * @param mixed $value valeur à trouver
+     * @param string $sign signe de comparaison
+     * @return \QueryBuilder
+     */
+    public function or_where($col, $value, $sign = '='){
+        $this->_where($col, $value, 'OR', $sign);
+        return $this;
+    }
+
+    private function _where($col, $value, $type, $sign){
+        if($type === self::INSERT)
+            trigger_error('la clause WHERE n\'est pas géré par insert !', E_USER_WARNING);
+        
+        $col = trim(addslashes($col));
+
+        if(!in_array($type, self::$CONDITION_TYPES)){
+            trigger_error('Type de comparaison indisponible : <b>'.$type.'</b> !', E_USER_WARNING);
+            $type = 'AND';
+        }
+
+        if(!in_array($sign, self::$CONDITION_SIGNS)){
+            trigger_error('Operateur de comparaison indisponible : <b>'.$sign.'</b> !', E_USER_WARNING);
+            $sign = '=';
+        }
+
+        $this->q_where[] = array($type, $col, $sign);
+        $this->q_params['w_'.base64_encode($col)] = $value;
+    }
+
+    /**
+     * Retourne la requête courante
+     * @param boolean $force_recompile forcer la recompilation de la requête ?
+     * @return string la requête généré
+     */
+    public function getQuery($force_recompile = false){
+        if($this->query === '' || $force_recompile){
+            switch($this->type){
+                case self::SELECT:
+                    $this->_compile_select_query();
+                    break;
+                default:
+                    throw new SQLException('Impossible de compiler la requête, car son type n\'a pas été encore définie !', '');
+            }
+        }
+
+        return $this->query;
+    }
+
+    private function _compile_select_query(){
+        $this->query = 'SELECT '.implode(', ', $this->q_sel);
+
+        if($this->q_from !== array())
+            $this->query .= ' FROM '.implode(', ', $this->q_from);
+
+        if($this->q_where !== array()){
+            $this->query .= ' WHERE ';
+            $first = true;
+            foreach($this->q_where as $c){
+                if(!$first){
+                    $this->query .= ' '.$c[0];
+                    $first = false;
+                }
+                $this->query .= ' '.$c[1].$c[2].':w_'.base64_encode($c[1]);
+            }
+        }
+    }
+
+    /**
+     * Execute la requête généré.
+     * Si il s'agit d'une sélection, Statement st retourné
+     * Sinon le statue est retourné
+     * @return Statement
+     */
+    public function execute(){
+        $query = $this->getQuery();
+
+        if(count($this->q_params) > 0){
+            $stmt = $this->connexion->prepare($query);
+            $state = $stmt->execute($this->q_params);
+
+            if($this->type === self::SELECT)
+                return $stmt;
+            else
+                return $state;
+        }
+
+        if($this->type === self::SELECT)
+            return $this->connexion->query($query);
+
+        return $this->connexion->exec($query);
     }
 }
 
@@ -442,4 +680,17 @@ function database_query($query, $connexion = null, $arg = null, $_ = null){
 
     $stmt = $connexion->prepare($query);
     return $stmt->execute($args);
+}
+
+/**
+ * Compte le nombre d'éléments dans une table
+ * @param string $table Nom de la table
+ * @param array $requirements condition WHERE
+ * @return int Nombre de lignes
+ */
+function database_count($table, array $requirement = array(), Database $conexion = null){
+    if($conexion === null)
+        $conexion = Database::getLastConnexion();
+
+    return $conexion->count($table, $requirement);
 }
