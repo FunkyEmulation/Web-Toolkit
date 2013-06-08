@@ -575,8 +575,10 @@ class SanitizedArray implements ArrayAccess, Iterator{
 #               Gestion des erreurs
 #==================================================
 
+//désactive l'afficheur d'erreur interne à PHP
 ini_set('display_errors', false);
 
+//gestion des erreurs lambda
 set_error_handler(function($errno, $errstr, $errfile = '', $errline = 0, array $errcontext = array()){
     if(!(error_reporting() & $errno))
         return;
@@ -617,6 +619,7 @@ register_shutdown_function(function(){
     }
 });
 
+//gestion des Exception
 set_exception_handler(function($e){
     exit($e);
 });
@@ -772,6 +775,31 @@ function output_render($view, array $vars = array()){
  */
 function set_layout($layout = null){
     Output::instance()->layout = $layout;
+}
+
+/**
+ * Change le layout courant
+ * @param string $layout Le nom de la vue de layout
+ */
+function output_set_layout($layout = null){
+    Output::instance()->layout = $layout;
+}
+
+/**
+ * Débute la mise en cache du buffer de sortie
+ * @param string $key
+ * @return boolean
+ */
+function output_start_cache($key){
+    return Output::instance()->startCache($key);
+}
+
+/**
+ * Enregistre le buffer dans le cache
+ * @param int $time Durée de vie en secondes
+ */
+function output_end_cache($time = 60){
+    return Output::instance()->endCache($time);
 }
 
 /*******************
