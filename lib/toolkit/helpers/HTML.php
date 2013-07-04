@@ -23,3 +23,15 @@ class HTML{
         echo '<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />';
     }
 }
+
+#==================================================
+#                    Fonctions
+#==================================================
+
+/**
+ * Définie l'encodage de la page
+ * @param string $charset
+ */
+function html_content_type($charset = 'utf-8'){
+    HTML::contentType($charset);
+}
